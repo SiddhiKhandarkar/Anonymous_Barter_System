@@ -1,21 +1,43 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { Coins, LogOut, Package, User, Bell, ChevronDown } from 'lucide-react';
+import { Coins, LogOut, Package, User, Bell, Menu, X, PlusCircle, LayoutDashboard, HelpCircle } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useContext(AuthContext);
-  
+  const [isOpen, setIsOpen] = useState(false);
+  const navClass = ({ isActive }) =>
+    `px-3 py-2 rounded-xl text-sm font-black transition ${
+      isActive ? 'bg-primary text-white' : 'text-primary/70 hover:text-primary hover:bg-primary/5'
+    }`;
+
   return (
     <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-border/50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center gap-4">
         <Link to="/" className="text-2xl font-black flex items-center gap-2 group">
           <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
             <Package className="w-6 h-6 text-secondary" />
           </div>
           <span className="text-primary tracking-tighter">ShadowBarter</span>
         </Link>
-        <div className="flex items-center gap-8">
+
+        {user && (
+          <div className="hidden lg:flex items-center gap-2">
+            <NavLink to="/dashboard" className={navClass}><LayoutDashboard className="w-4 h-4 inline mr-1" />Dashboard</NavLink>
+            <NavLink to="/create-item" className={navClass}><PlusCircle className="w-4 h-4 inline mr-1" />Create Item</NavLink>
+            <NavLink to="/notifications" className={navClass}><Bell className="w-4 h-4 inline mr-1" />Notifications</NavLink>
+          </div>
+        )}
+
+        <div className="flex items-center gap-4">
+          <button 
+            title="Help & Tour"
+            onClick={() => window.dispatchEvent(new Event('start-tour'))}
+            className="p-2 text-primary/60 hover:text-primary transition group hidden sm:block"
+          >
+            <HelpCircle className="w-6 h-6"/>
+          </button>
+
           {user ? (
             <>
               <div className="hidden md:flex items-center gap-2 font-black text-primary bg-secondary/10 px-4 py-2 rounded-full border border-secondary/20">
@@ -23,11 +45,13 @@ export default function Navbar() {
                 <span>{user.coins} <span className="text-[10px] uppercase opacity-60 ml-1">Credits</span></span>
               </div>
               
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-3">
                 <Link title="Notifications" to="/notifications" className="relative p-2 text-primary/60 hover:text-primary transition group">
                   <Bell className="w-6 h-6"/>
                   <span className="absolute top-2 right-2 w-2 h-2 bg-community rounded-full border-2 border-white" />
                 </Link>
+
+
                 
                 <Link to="/dashboard" className="flex items-center gap-3 group">
                   <div className="flex flex-col items-end hidden sm:flex">
@@ -46,16 +70,45 @@ export default function Navbar() {
                 >
                   <LogOut className="w-6 h-6"/>
                 </button>
+                <button
+                  className="lg:hidden p-2 text-primary"
+                  onClick={() => setIsOpen((prev) => !prev)}
+                  aria-label="Toggle navigation menu"
+                >
+                  {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
               </div>
             </>
           ) : (
             <>
               <Link to="/login" className="text-primary/60 hover:text-primary transition font-black text-sm uppercase tracking-widest">Login</Link>
               <Link to="/register" className="bg-primary text-background px-6 py-3 rounded-2xl shadow-xl shadow-primary/20 font-black hover:scale-105 transition-all active:scale-95">Link Node</Link>
+              <button
+                className="lg:hidden p-2 text-primary ml-2"
+                onClick={() => window.dispatchEvent(new Event('start-tour'))}
+                title="Help"
+              >
+                <HelpCircle className="w-6 h-6" />
+              </button>
             </>
           )}
         </div>
       </div>
+
+      {user && isOpen && (
+        <div className="lg:hidden px-6 pb-4 flex flex-col gap-2 border-t border-border/50">
+          <NavLink onClick={() => setIsOpen(false)} to="/dashboard" className={navClass}>Dashboard</NavLink>
+          <NavLink onClick={() => setIsOpen(false)} to="/create-item" className={navClass}>Create Item</NavLink>
+          <NavLink onClick={() => setIsOpen(false)} to="/notifications" className={navClass}>Notifications</NavLink>
+          <button 
+            onClick={() => { setIsOpen(false); window.dispatchEvent(new Event('start-tour')); }} 
+            className="text-left px-3 py-2 rounded-xl text-sm font-black text-primary/70 hover:text-primary hover:bg-primary/5 transition flex items-center"
+          >
+            <HelpCircle className="w-4 h-4 inline mr-1" />
+            Tour & Help
+          </button>
+        </div>
+      )}
     </nav>
   );
 }

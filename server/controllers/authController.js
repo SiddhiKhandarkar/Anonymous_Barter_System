@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { computeBadges } = require('../utils/reputation');
 
 exports.register = async (req, res) => {
   try {
@@ -15,11 +16,21 @@ exports.register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new User({ anonymousId, password: hashedPassword });
+    const newUser = new User({ anonymousId, password: hashedPassword, coins: 50 });
     await newUser.save();
 
     const token = jwt.sign({ id: newUser._id, anonymousId }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.status(201).json({ token, user: { id: newUser._id, anonymousId, coins: newUser.coins } });
+    res.status(201).json({
+      token,
+      user: {
+        id: newUser._id,
+        anonymousId,
+        coins: newUser.coins,
+        rating: newUser.rating,
+        totalTrades: newUser.totalTrades,
+        badges: computeBadges(newUser)
+      }
+    });
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ error: error.message });
@@ -36,7 +47,17 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id, anonymousId: user.anonymousId }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.status(200).json({ token, user: { id: user._id, anonymousId: user.anonymousId, coins: user.coins } });
+    res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        anonymousId: user.anonymousId,
+        coins: user.coins,
+        rating: user.rating,
+        totalTrades: user.totalTrades,
+        badges: computeBadges(user)
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -45,7 +66,7 @@ exports.login = async (req, res) => {
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
-    res.json(user);
+    res.json({ ...user.toObject(), badges: computeBadges(user) });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

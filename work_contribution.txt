@@ -1,0 +1,30 @@
+# Project Work Contribution Report: Anonymous Barter System (ShadowBarter)
+
+## 1. Literature Survey & Research
+- **Kadambari Marne**: Conducted comprehensive literature surveys and research on existing digital barter platforms, circular economies, and privacy-first architectures. Analyzed current limitations in college-environment exchange systems to formulate the core problem statement and propose the secure, anonymous architecture used in the project.
+
+## 2. Frontend Development & UI/UX Design
+**Lead: Siddhi Khandarkar**
+- Designed and developed the complete interactive user interface using React.js, Tailwind CSS, and Framer Motion.
+- Implemented the gamified user dashboard allowing users to track their coin balance, reputation (ratings), and active swaps.
+- Developed the frontend components for the real-time anonymous chat system and the simulated locker handoff interfaces.
+- Ensured a responsive, accessible, and engaging user experience tailored for the circular economy color palette and design requirements.
+
+## 3. Backend Development & System Architecture
+**Lead: Kadambari Marne**
+- Architected the robust backend server infrastructure using Node.js and Express.js.
+- Designed the database schemas and managed data persistence using MongoDB (Mongoose).
+- Implemented the stateless JWT-based authentication system ensuring complete user anonymity.
+- Developed the core business logic, including the coin-based economy transaction system (earning/spending coins) and the simulated locker handoff verification (QR codes and OTPs).
+
+## 4. AI Moderation, Matching & Real-Time Features
+**Lead: Kadambari Marne**
+- Integrated the AI-Assisted safety moderation filter to automatically scan listings and block restricted or illegal items.
+- Developed the smart matching algorithms to provide intelligent item suggestions based on user interests.
+- Set up the Socket.IO infrastructure on the server for handling real-time, secure anonymous communication between peers.
+
+---
+### Summary of Contributions
+
+*   **Siddhi Khandarkar (Frontend Lead)**: Focused on translating system capabilities into a seamless, user-friendly, and visually appealing web interface. Responsible for all React components, styling, UI logic, and dashboard visualizations.
+*   **Kadambari Marne (Backend & Research Lead)**: Handled the foundational research, database design, server-side APIs, AI integrations, security protocols, and the overall system architecture that powers the platform's core functionalities.

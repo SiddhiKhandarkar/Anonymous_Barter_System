@@ -12,6 +12,7 @@ export default function CreateItem() {
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const potentialCoins = condition === 'New' ? 7 : condition === 'Good' ? 5 : 3;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,7 +97,7 @@ export default function CreateItem() {
                 <div className="flex items-end">
                    <div className="w-full p-5 bg-secondary/20 rounded-2xl border-2 border-secondary/20 flex items-center justify-center gap-2">
                       <Sparkles className="w-5 h-5 text-primary" />
-                      <span className="font-black text-primary">Potential: 7 Coins</span>
+                      <span className="font-black text-primary">Potential: {potentialCoins} Coins</span>
                    </div>
                 </div>
               </div>

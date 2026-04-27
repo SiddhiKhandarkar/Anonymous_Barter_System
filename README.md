@@ -5,7 +5,7 @@ ShadowBarter is a privacy-first, anonymous barter platform designed for college 
 ## 🚀 Key Features
 
 - **Anonymous Authentication**: Peer-to-peer trust without personal data. Identities are auto-generated (e.g., `User_1024`).
-- **Coin-Based Economy**: Start with 10 coins. Earn 7 for giving and spend 5 for taking.
+- **Coin-Based Economy**: Start with 50 coins. Earn 7 for giving and spend 5 for taking.
 - **AI-Assisted Safety**: Built-in moderation filter to block restricted items and automatic categorization of listings.
 - **Simulated Locker Handoff**: Secure exchange via digital lockers with QR codes and OTP verification.
 - **Smart Matching**: Intelligent suggestions based on your listings and interests.
@@ -87,3 +87,7 @@ ShadowBarter is a privacy-first, anonymous barter platform designed for college 
 
 ## 🛡️ Safety First
 ShadowBarter utilizes an AI Moderation layer that scans every listing. Items like weapons, drugs, or illegal substances are automatically flagged and rejected to ensure a safe community for all students.
+
+## 👥 Creators
+- **Siddhi Khandarkar**: 7756077312
+- **Kadambari Marne**: 8263861829

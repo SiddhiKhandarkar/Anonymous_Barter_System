@@ -5,6 +5,9 @@ const FeedbackSchema = new mongoose.Schema({
   fromUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   toUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   rating: { type: Number, required: true, min: 1, max: 5 },
+  punctuality: { type: Number, min: 1, max: 5, default: 5 },
+  itemQuality: { type: Number, min: 1, max: 5, default: 5 },
+  communication: { type: Number, min: 1, max: 5, default: 5 },
   comment: { type: String }
 }, { timestamps: true });
 
