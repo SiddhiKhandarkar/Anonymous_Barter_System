@@ -7,5 +7,6 @@ router.post('/', auth, createItem);
 router.get('/', getItems);
 router.get('/my', auth, getMyItems);
 router.get('/:id', getItemById);
+router.post('/:id/bid', auth, require('../controllers/itemController').placeBid);
 
 module.exports = router;

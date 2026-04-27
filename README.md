@@ -87,3 +87,7 @@ ShadowBarter is a privacy-first, anonymous barter platform designed for college 
 
 ## 🛡️ Safety First
 ShadowBarter utilizes an AI Moderation layer that scans every listing. Items like weapons, drugs, or illegal substances are automatically flagged and rejected to ensure a safe community for all students.
+
+## 👥 Creators
+- **Siddhi Khandarkar**: 7756077312
+- **Kadambari Marne**: 8263861829

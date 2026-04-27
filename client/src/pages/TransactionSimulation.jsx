@@ -16,11 +16,15 @@ export default function TransactionSimulation() {
   const [feedbackRating, setFeedbackRating] = useState(5);
   const [feedbackComment, setFeedbackComment] = useState('');
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+  const [disputeReason, setDisputeReason] = useState('empty_locker');
+  const [disputeDetails, setDisputeDetails] = useState('');
+  const [dispute, setDispute] = useState(null);
   const socketRef = useRef();
 
   useEffect(() => {
     fetchTransaction();
     fetchChat();
+    fetchDispute();
 
     socketRef.current = io('http://localhost:5000');
     socketRef.current.emit('joinRoom', id);
@@ -44,6 +48,15 @@ export default function TransactionSimulation() {
       const res = await api.get(`/chats/${id}`);
       setChat(res.data.messages || []);
     } catch (err) { console.error(err); }
+  };
+
+  const fetchDispute = async () => {
+    try {
+      const res = await api.get(`/transactions/${id}/dispute`);
+      setDispute(res.data);
+    } catch {
+      setDispute(null);
+    }
   };
 
   const handleSend = async (e) => {
@@ -86,6 +99,31 @@ export default function TransactionSimulation() {
     }
   };
 
+  const submitDispute = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.post(`/transactions/${id}/dispute`, { reason: disputeReason, details: disputeDetails });
+      setDispute(res.data);
+      alert('Dispute raised. Support will review this transaction.');
+      fetchTransaction();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Could not raise dispute');
+    }
+  };
+
+  const resolveDispute = async (action) => {
+    try {
+      await api.post(`/transactions/${id}/dispute/resolve`, { action });
+      fetchDispute();
+      fetchTransaction();
+      const me = await api.get('/auth/me');
+      setUser(me.data);
+      alert('Dispute resolution action completed.');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Could not resolve dispute');
+    }
+  };
+
   if (!transaction) return <div className="p-8 text-center text-primary font-bold">Loading Simulation...</div>;
 
   const currentUserId = String(user?.id || user?._id || '');
@@ -117,6 +155,7 @@ export default function TransactionSimulation() {
                <div className="p-4 bg-background/50 rounded-2xl border border-border/40">
                  <span className="block text-xs font-bold uppercase tracking-widest text-text/50 mb-1">Assigned Locker</span>
                  <span className="text-2xl font-black text-primary">{transaction.lockerId}</span>
+                <p className="text-xs mt-2 font-bold text-text/60">Escrow: {transaction.escrowStatus || 'None'}</p>
                </div>
 
                {isGiver ? (
@@ -210,6 +249,42 @@ export default function TransactionSimulation() {
                 Submit Feedback
               </button>
             </form>
+          </div>
+        )}
+
+        {!isGiver && ['Ready', 'Completed', 'Disputed'].includes(transaction.status) && (
+          <div className="bg-error/5 p-8 rounded-[32px] border border-error/20 shadow-sm">
+            <h3 className="text-2xl font-black text-error mb-2">Locker Dispute System</h3>
+            {dispute ? (
+              <div className="space-y-3">
+                <div className="text-sm font-bold text-error bg-white border border-error/30 rounded-2xl p-4">
+                  Dispute Active: {dispute.reason.replace('_', ' ')} ({dispute.status})
+                </div>
+                {isGiver && dispute.status === 'Open' && (
+                  <div className="flex gap-3">
+                    <button onClick={() => resolveDispute('approve_refund')} className="px-4 py-2 rounded-xl bg-secondary text-primary font-black">Approve Refund</button>
+                    <button onClick={() => resolveDispute('reject_release')} className="px-4 py-2 rounded-xl bg-primary text-white font-black">Reject & Release</button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <form onSubmit={submitDispute} className="space-y-4">
+                <p className="text-text/70">Flag this transaction if the locker was empty or the item was defective during pickup.</p>
+                <select value={disputeReason} onChange={(e) => setDisputeReason(e.target.value)} className="w-full p-3 border-2 border-border rounded-xl">
+                  <option value="empty_locker">Locker was empty</option>
+                  <option value="defective_item">Item was defective</option>
+                  <option value="other">Other issue</option>
+                </select>
+                <textarea
+                  rows={3}
+                  value={disputeDetails}
+                  onChange={(e) => setDisputeDetails(e.target.value)}
+                  className="w-full p-3 border-2 border-border rounded-xl"
+                  placeholder="Optional details for support review"
+                />
+                <button type="submit" className="px-6 py-3 bg-error text-white font-black rounded-xl">Raise Dispute</button>
+              </form>
+            )}
           </div>
         )}
       </div>

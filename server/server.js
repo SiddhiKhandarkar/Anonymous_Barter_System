@@ -53,12 +53,16 @@ const itemRoutes = require('./routes/itemRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const requestRoutes = require('./routes/requestRoutes');
+const matchingRoutes = require('./routes/matchingRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/items', itemRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/chats', chatRoutes);
+app.use('/api/requests', requestRoutes);
+app.use('/api/matching', matchingRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI).then(() => {
